@@ -1,0 +1,78 @@
+{
+  "status": "success",
+  "outputs": {
+    "savingsAccountNumber": "[REDACTED:accountNumber]",
+    "savingsCurrentBalance": 4812.55,
+    "savingsStatus": "Active"
+  },
+  "meta": {
+    "capabilityId": "meridian.member.savings-balance",
+    "capabilityVersion": "1.2.0",
+    "runId": "rpl_mtu7yz2i_a44c41",
+    "tenantId": null,
+    "startedAt": "2026-09-09T14:54:32.590Z",
+    "durationMs": 600,
+    "steps": [
+      {
+        "stepId": "s1",
+        "intent": "Enter operator ID to sign on",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:32.643Z",
+        "durationMs": 60,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s2",
+        "intent": "Enter operator password",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:32.703Z",
+        "durationMs": 23,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s3",
+        "intent": "Submit credentials to sign on",
+        "actionType": "click",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:32.726Z",
+        "durationMs": 81,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false
+      },
+      {
+        "stepId": "s4",
+        "intent": "Enter member ID to search",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:32.807Z",
+        "durationMs": 39,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s5",
+        "intent": "Search for the member after entering ID",
+        "actionType": "click",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:32.846Z",
+        "durationMs": 329,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false
+      }
+    ],
+    "recoveries": [],
+    "driftDetected": false,
+    "evidence": {
+      "runId": "rpl_mtu7yz2i_a44c41",
+      "dir": "evidence/rpl_mtu7yz2i_a44c41",
+      "logFile": "evidence/rpl_mtu7yz2i_a44c41/events.jsonl"
+    }
+  }
+}

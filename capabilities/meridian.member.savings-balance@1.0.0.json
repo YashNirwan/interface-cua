@@ -1,0 +1,279 @@
+{
+  "schemaVersion": "cua.capability/v1",
+  "id": "meridian.member.savings-balance",
+  "version": "1.0.0",
+  "status": "draft",
+  "summary": "Retrieved Savings account number, balance, and status for the member.",
+  "description": "Sign on as the operator, look up member {{memberId}}, then report the account number, current balance and status of that member's Savings account.\n\nDiscovered by groq/openai/gpt-oss-120b against http://127.0.0.1:8099.",
+  "app": {
+    "vendor": "meridian",
+    "product": "core-member-servicing",
+    "versionRange": "*",
+    "surface": "legacy-web"
+  },
+  "tenantId": null,
+  "entry": {
+    "uri": "http://127.0.0.1:8099/meridian/login",
+    "requiresSession": true
+  },
+  "inputs": {
+    "memberId": {
+      "type": "string",
+      "description": "Six-digit member number to look up",
+      "required": true,
+      "pattern": "\\d{6}",
+      "sensitivity": "identifier",
+      "source": "caller",
+      "example": "100482"
+    },
+    "operatorId": {
+      "type": "string",
+      "description": "operatorId (from secret store)",
+      "required": true,
+      "sensitivity": "secret",
+      "source": "secret-store",
+      "secretKey": "MERIDIAN_USER"
+    },
+    "operatorPassword": {
+      "type": "string",
+      "description": "operatorPassword (from secret store)",
+      "required": true,
+      "sensitivity": "secret",
+      "source": "secret-store",
+      "secretKey": "MERIDIAN_PASSWORD"
+    }
+  },
+  "outputs": [
+    {
+      "name": "savingsAccountNumber",
+      "type": "string",
+      "description": "Savings account number",
+      "from": {
+        "labeledValue": {
+          "label": "Account Number",
+          "row": "Savings"
+        }
+      },
+      "required": true,
+      "sensitivity": "financial",
+      "expect": "non-empty"
+    },
+    {
+      "name": "savingsCurrentBalance",
+      "type": "money",
+      "description": "Savings current balance",
+      "from": {
+        "labeledValue": {
+          "label": "Current Balance",
+          "row": "Savings"
+        }
+      },
+      "required": true,
+      "sensitivity": "financial",
+      "expect": "any"
+    },
+    {
+      "name": "savingsStatus",
+      "type": "string",
+      "description": "Savings account status",
+      "from": {
+        "labeledValue": {
+          "label": "Status",
+          "row": "Savings"
+        }
+      },
+      "required": true,
+      "sensitivity": "public",
+      "expect": "non-empty"
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "intent": "Enter operator ID to sign on",
+      "action": {
+        "type": "type",
+        "target": {
+          "role": "textbox",
+          "name": "User ID",
+          "nameMatch": "exact",
+          "framePath": [],
+          "ordinal": 0,
+          "textNear": [
+            "User ID"
+          ],
+          "hint": {
+            "id": "ctl00_MainContent_txtUserId",
+            "name": "ctl00$MainContent$txtUserId",
+            "type": "text"
+          }
+        },
+        "text": "{{operatorId}}",
+        "submit": false
+      },
+      "risk": "safe",
+      "timeoutMs": 10000,
+      "retries": 2,
+      "onFailure": "fail",
+      "recordedTier": "exact-name-in-frame"
+    },
+    {
+      "id": "s2",
+      "intent": "Enter operator password",
+      "action": {
+        "type": "type",
+        "target": {
+          "role": "textbox",
+          "name": "Password",
+          "nameMatch": "exact",
+          "framePath": [],
+          "ordinal": 0,
+          "textNear": [
+            "Password"
+          ],
+          "hint": {
+            "id": "ctl00_MainContent_txtPassword",
+            "name": "ctl00$MainContent$txtPassword",
+            "type": "password"
+          }
+        },
+        "text": "{{operatorPassword}}",
+        "submit": false
+      },
+      "risk": "safe",
+      "timeoutMs": 10000,
+      "retries": 2,
+      "onFailure": "fail",
+      "recordedTier": "exact-name-in-frame"
+    },
+    {
+      "id": "s3",
+      "intent": "Submit credentials to sign on",
+      "action": {
+        "type": "click",
+        "target": {
+          "role": "button",
+          "name": "Sign On",
+          "nameMatch": "exact",
+          "framePath": [],
+          "ordinal": 0,
+          "hint": {
+            "id": "ctl00_MainContent_btnSignOn",
+            "name": "ctl00$MainContent$btnSignOn",
+            "type": "submit"
+          }
+        }
+      },
+      "checkpoint": {
+        "all": [
+          {
+            "uriMatches": "/meridian"
+          },
+          {
+            "textPresent": "MAIN MENU Member Search Account Services Sign Off Operator: demo"
+          }
+        ]
+      },
+      "risk": "safe",
+      "timeoutMs": 10000,
+      "retries": 2,
+      "onFailure": "fail",
+      "recordedTier": "exact-name-in-frame"
+    },
+    {
+      "id": "s4",
+      "intent": "Enter member ID to search",
+      "action": {
+        "type": "type",
+        "target": {
+          "role": "textbox",
+          "name": "Member ID",
+          "nameMatch": "exact",
+          "framePath": [
+            "mainFrame"
+          ],
+          "ordinal": 0,
+          "textNear": [
+            "Member ID"
+          ],
+          "hint": {
+            "id": "ctl00_MainContent_txtMemberId",
+            "name": "ctl00$MainContent$txtMemberId",
+            "type": "text"
+          }
+        },
+        "text": "{{memberId}}",
+        "submit": false
+      },
+      "risk": "safe",
+      "timeoutMs": 10000,
+      "retries": 2,
+      "onFailure": "fail",
+      "recordedTier": "exact-name-in-frame"
+    },
+    {
+      "id": "s5",
+      "intent": "Search for member after entering ID",
+      "action": {
+        "type": "click",
+        "target": {
+          "role": "button",
+          "name": "Search",
+          "nameMatch": "exact",
+          "framePath": [
+            "mainFrame"
+          ],
+          "ordinal": 0,
+          "hint": {
+            "id": "ctl00_MainContent_btnSearch",
+            "name": "ctl00$MainContent$btnSearch",
+            "type": "submit"
+          }
+        }
+      },
+      "checkpoint": {
+        "textPresent": "Member Profile MERIDIAN CORE v4"
+      },
+      "risk": "safe",
+      "timeoutMs": 10000,
+      "retries": 2,
+      "onFailure": "fail",
+      "recordedTier": "exact-name-in-frame"
+    }
+  ],
+  "success": {
+    "all": [
+      {
+        "textPresent": "SAV-0{{memberId}}-01"
+      },
+      {
+        "uriMatches": "/meridian"
+      }
+    ]
+  },
+  "outcomes": [],
+  "recoveries": [],
+  "policy": {
+    "allowedOrigins": [
+      "http://127.0.0.1:8099"
+    ],
+    "maxSteps": 20,
+    "maxDurationMs": 120000,
+    "containsRiskyActions": false
+  },
+  "provenance": {
+    "recordedAt": "2026-09-09T14:57:09.756Z",
+    "recordedBy": {
+      "kind": "llm-discovery",
+      "model": "openai/gpt-oss-120b",
+      "provider": "groq"
+    },
+    "runId": "disc_mtu80lij_63f683",
+    "goal": "Sign on as the operator, look up member {{memberId}}, then report the account number, current balance and status of that member's Savings account.",
+    "transcriptDigest": "1bdeeb73"
+  },
+  "stability": {
+    "runs": 0,
+    "successes": 0
+  }
+}

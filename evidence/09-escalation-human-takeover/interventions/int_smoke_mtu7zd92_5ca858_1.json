@@ -1,0 +1,35 @@
+{
+  "id": "int_smoke_mtu7zd92_5ca858_1",
+  "runId": "smoke_mtu7zd92_5ca858",
+  "raisedAt": "2026-09-09T14:54:51.907Z",
+  "reason": "checkpoint_failed",
+  "summary": "step 's7' (Open the savings account row) did not reach its expected state after 3 attempts",
+  "context": {
+    "mode": "replay",
+    "location": {
+      "uri": "http://127.0.0.1:8099/meridian/member/100482/account",
+      "title": "Server Error"
+    },
+    "capabilityId": "meridian.member.savings-balance.smoke",
+    "capabilityVersion": "1.0.0",
+    "stepId": "s7",
+    "expected": "text \"Account Detail\"",
+    "observed": "[Server Error] /meridian/member/:id/account :: Server Error in '/MeridianCore' Application. Unhandled exception in module MBRSVC. Reference 0x8007007E. Description: An unhandled exception occurred during the execution of the current web request. Review the stack trace for more information about the error and where it originat…",
+    "screenshot": "captures/int_smoke_mtu7zd92_5ca858_1.png",
+    "snapshot": "Server Error — http://127.0.0.1:8099/meridian/member/100482/account\n\nCONTROLS (7):\n  cell \"Server Error in '/MeridianCore' Application.\" section=Server Error in '/MeridianCore' Application.\n  generic \"Server Error in '/MeridianCore' Application.\" section=Server Error in '/MeridianCore' Application.\n  cell \"Unhandled exception in module MBRSVC. Reference 0x8007007E.\" section=Unhandled exception in module MBRSVC. Reference 0x8007007E.\n  generic \"Unhandled exception in module MBRSVC. Reference 0x8007007E.\" section=Unhandled exception in module MBRSVC. Reference 0x8007007E.\n  cell \"Description: An unhandled exception occurred during the execution of the current web request. Review the stack trace for\" section=Unhandled exception in module MBRSVC. Reference 0x8007007E.\n  cell \"Return to Member Search\" section=Unhandled exception in module MBRSVC. Reference 0x8007007E.\n  link \"Return to Member Search\" section=Unhandled exception in module MBRSVC. Reference 0x8007007E.\n\nTEXT:\n  Server Error in '/MeridianCore' Application. Unhandled exception in module MBRSVC. Reference 0x8007007E. Description: An unhandled exception occurred during the execution of the current web request. Review the stack trace for more information about the error and where it originated in the code. Return to Member Search"
+  },
+  "allowedResolutions": [
+    "resume",
+    "skip",
+    "abort"
+  ],
+  "status": "resolved",
+  "resolution": {
+    "kind": "abort",
+    "resolvedAt": "2026-09-09T14:54:51.909Z",
+    "operator": "auto (CUA_AUTO_RESOLVE_ESCALATIONS)",
+    "humanActions": [],
+    "note": "auto-resolved: non-interactive run"
+  },
+  "humanActions": []
+}

@@ -1,0 +1,221 @@
+{
+  "runId": "disc_mtu80lij_63f683",
+  "goal": "Sign on as the operator, look up member {{memberId}}, then report the account number, current balance and status of that member's Savings account.",
+  "steps": [
+    {
+      "intent": "Enter operator ID to sign on",
+      "action": {
+        "type": "type",
+        "target": {
+          "role": "textbox",
+          "name": "User ID",
+          "nameMatch": "exact",
+          "framePath": [],
+          "ordinal": 0,
+          "textNear": [
+            "User ID"
+          ],
+          "hint": {
+            "id": "ctl00_MainContent_txtUserId",
+            "name": "ctl00$MainContent$txtUserId",
+            "type": "text"
+          }
+        },
+        "text": "{{operatorId}}",
+        "submit": false
+      },
+      "recordedTier": "exact-name-in-frame",
+      "risk": "safe",
+      "effect": {
+        "uri": "http://127.0.0.1:8099/meridian/login",
+        "canonicalPath": "/meridian/login",
+        "title": "Meridian Core - Sign On",
+        "newText": []
+      }
+    },
+    {
+      "intent": "Enter operator password",
+      "action": {
+        "type": "type",
+        "target": {
+          "role": "textbox",
+          "name": "Password",
+          "nameMatch": "exact",
+          "framePath": [],
+          "ordinal": 0,
+          "textNear": [
+            "Password"
+          ],
+          "hint": {
+            "id": "ctl00_MainContent_txtPassword",
+            "name": "ctl00$MainContent$txtPassword",
+            "type": "password"
+          }
+        },
+        "text": "{{operatorPassword}}",
+        "submit": false
+      },
+      "recordedTier": "exact-name-in-frame",
+      "risk": "safe",
+      "effect": {
+        "uri": "http://127.0.0.1:8099/meridian/login",
+        "canonicalPath": "/meridian/login",
+        "title": "Meridian Core - Sign On",
+        "newText": []
+      }
+    },
+    {
+      "intent": "Submit credentials to sign on",
+      "action": {
+        "type": "click",
+        "target": {
+          "role": "button",
+          "name": "Sign On",
+          "nameMatch": "exact",
+          "framePath": [],
+          "ordinal": 0,
+          "hint": {
+            "id": "ctl00_MainContent_btnSignOn",
+            "name": "ctl00$MainContent$btnSignOn",
+            "type": "submit"
+          }
+        }
+      },
+      "recordedTier": "exact-name-in-frame",
+      "risk": "safe",
+      "effect": {
+        "uri": "http://127.0.0.1:8099/meridian",
+        "canonicalPath": "/meridian",
+        "title": "Meridian Core",
+        "newText": [
+          "</td></tr></table> </body>",
+          "MAIN MENU Member Search Account Services Sign Off Operator: demo",
+          "Member Search MERIDIAN CORE v4"
+        ]
+      }
+    },
+    {
+      "intent": "Enter member ID to search",
+      "action": {
+        "type": "type",
+        "target": {
+          "role": "textbox",
+          "name": "Member ID",
+          "nameMatch": "exact",
+          "framePath": [
+            "mainFrame"
+          ],
+          "ordinal": 0,
+          "textNear": [
+            "Member ID"
+          ],
+          "hint": {
+            "id": "ctl00_MainContent_txtMemberId",
+            "name": "ctl00$MainContent$txtMemberId",
+            "type": "text"
+          }
+        },
+        "text": "{{memberId}}",
+        "submit": false
+      },
+      "recordedTier": "exact-name-in-frame",
+      "risk": "safe",
+      "effect": {
+        "uri": "http://127.0.0.1:8099/meridian",
+        "canonicalPath": "/meridian",
+        "title": "Meridian Core",
+        "newText": []
+      }
+    },
+    {
+      "intent": "Search for member after entering ID",
+      "action": {
+        "type": "click",
+        "target": {
+          "role": "button",
+          "name": "Search",
+          "nameMatch": "exact",
+          "framePath": [
+            "mainFrame"
+          ],
+          "ordinal": 0,
+          "hint": {
+            "id": "ctl00_MainContent_btnSearch",
+            "name": "ctl00$MainContent$btnSearch",
+            "type": "submit"
+          }
+        }
+      },
+      "recordedTier": "exact-name-in-frame",
+      "risk": "safe",
+      "effect": {
+        "uri": "http://127.0.0.1:8099/meridian",
+        "canonicalPath": "/meridian",
+        "title": "Meridian Core",
+        "newText": [
+          "Member Profile MERIDIAN CORE v4",
+          "55 Checking [REDACTED:accountNumber] Active $1,204",
+          "70 2026-09-01 Payroll deposit [REDACTED:accountNumber] $1,840",
+          "00 2026-08-27 Branch withdrawal [REDACTED:accountNumber] -$300",
+          "00 Return to Member Search"
+        ]
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "name": "savingsAccountNumber",
+      "type": "string",
+      "description": "Savings account number",
+      "sensitivity": "financial",
+      "label": "Account Number",
+      "row": "Savings"
+    },
+    {
+      "name": "savingsCurrentBalance",
+      "type": "money",
+      "description": "Savings current balance",
+      "sensitivity": "financial",
+      "label": "Current Balance",
+      "row": "Savings"
+    },
+    {
+      "name": "savingsStatus",
+      "type": "string",
+      "description": "Savings account status",
+      "sensitivity": "public",
+      "label": "Status",
+      "row": "Savings"
+    }
+  ],
+  "entryUri": "http://127.0.0.1:8099/meridian/login",
+  "params": [
+    {
+      "name": "memberId",
+      "type": "string",
+      "sensitivity": "identifier",
+      "fromSecretStore": "[SECRET]"
+    },
+    {
+      "name": "operatorId",
+      "type": "string",
+      "sensitivity": "secret",
+      "fromSecretStore": "[SECRET]"
+    },
+    {
+      "name": "operatorPassword",
+      "type": "string",
+      "sensitivity": "secret",
+      "fromSecretStore": "[SECRET]"
+    }
+  ],
+  "model": "openai/gpt-oss-120b",
+  "provider": "groq",
+  "llmCalls": 9,
+  "transcriptDigest": "1bdeeb73",
+  "observedInterruptions": [],
+  "status": "success",
+  "successCheckpointText": "[REDACTED:accountNumber]",
+  "summary": "Retrieved Savings account number, balance, and status for the member.",
+  "detail": "completed in 81490ms"
+}

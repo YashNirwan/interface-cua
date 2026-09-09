@@ -1,0 +1,161 @@
+[
+  {
+    "name": "meridian.member.savings-balance",
+    "description": "Retrieved Savings account number, balance, and status for member {{memberId}} Returns: savingsAccountNumber (string), savingsCurrentBalance (money), savingsStatus (string). May instead return one of these expected business outcomes: MEMBER_NOT_FOUND, MEMBER_RESTRICTED.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memberId": {
+          "type": "string",
+          "description": "Six-digit member number to look up",
+          "pattern": "\\d{6}",
+          "examples": [
+            "100482"
+          ]
+        }
+      },
+      "required": [
+        "memberId"
+      ]
+    },
+    "returns": {
+      "outputs": {
+        "savingsAccountNumber": {
+          "type": "string",
+          "description": "Savings account number"
+        },
+        "savingsCurrentBalance": {
+          "type": "money",
+          "description": "Savings account current balance"
+        },
+        "savingsStatus": {
+          "type": "string",
+          "description": "Savings account status"
+        }
+      },
+      "businessOutcomes": [
+        {
+          "code": "MEMBER_NOT_FOUND",
+          "description": "No member exists with the supplied id."
+        },
+        {
+          "code": "MEMBER_RESTRICTED",
+          "description": "The operator is not entitled to view this member record."
+        }
+      ]
+    },
+    "meta": {
+      "version": "1.2.0",
+      "status": "approved",
+      "app": "meridian/core-member-servicing",
+      "containsRiskyActions": false,
+      "unattendedSafe": true,
+      "stability": {
+        "runs": 3,
+        "successes": 3,
+        "lastVerifiedAt": "2026-09-09T14:38:38.753Z"
+      }
+    }
+  },
+  {
+    "name": "meridian.member.savings-balance",
+    "description": "Retrieved Savings account number, balance, and status for member {{memberId}} Returns: savingsAccountNumber (string), savingsCurrentBalance (money), savingsStatus (string). May instead return one of these expected business outcomes: MEMBER_NOT_FOUND.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memberId": {
+          "type": "string",
+          "description": "Six-digit member number to look up",
+          "pattern": "\\d{6}",
+          "examples": [
+            "100482"
+          ]
+        }
+      },
+      "required": [
+        "memberId"
+      ]
+    },
+    "returns": {
+      "outputs": {
+        "savingsAccountNumber": {
+          "type": "string",
+          "description": "Savings account number"
+        },
+        "savingsCurrentBalance": {
+          "type": "money",
+          "description": "Savings account current balance"
+        },
+        "savingsStatus": {
+          "type": "string",
+          "description": "Savings account status"
+        }
+      },
+      "businessOutcomes": [
+        {
+          "code": "MEMBER_NOT_FOUND",
+          "description": "No member exists with the supplied id."
+        }
+      ]
+    },
+    "meta": {
+      "version": "1.1.0",
+      "status": "draft",
+      "app": "meridian/core-member-servicing",
+      "containsRiskyActions": false,
+      "unattendedSafe": false,
+      "stability": {
+        "runs": 0,
+        "successes": 0
+      }
+    }
+  },
+  {
+    "name": "meridian.member.savings-balance",
+    "description": "Retrieved Savings account number, balance, and status for member {{memberId}} Returns: savingsAccountNumber (string), savingsCurrentBalance (money), savingsStatus (string).",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memberId": {
+          "type": "string",
+          "description": "Six-digit member number to look up",
+          "pattern": "\\d{6}",
+          "examples": [
+            "100482"
+          ]
+        }
+      },
+      "required": [
+        "memberId"
+      ]
+    },
+    "returns": {
+      "outputs": {
+        "savingsAccountNumber": {
+          "type": "string",
+          "description": "Savings account number"
+        },
+        "savingsCurrentBalance": {
+          "type": "money",
+          "description": "Savings account current balance"
+        },
+        "savingsStatus": {
+          "type": "string",
+          "description": "Savings account status"
+        }
+      },
+      "businessOutcomes": []
+    },
+    "meta": {
+      "version": "1.0.0",
+      "status": "draft",
+      "app": "meridian/core-member-servicing",
+      "containsRiskyActions": false,
+      "unattendedSafe": false,
+      "stability": {
+        "runs": 0,
+        "successes": 0
+      }
+    }
+  }
+]

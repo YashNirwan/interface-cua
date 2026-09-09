@@ -1,0 +1,49 @@
+{
+  "$comment": "Default guardrail configuration. This file is the allowlist the GuardedSurface enforces; it is deliberately data rather than code so a compliance reviewer can diff it in a pull request without reading TypeScript.",
+
+  "allowedOrigins": ["http://127.0.0.1:8099"],
+
+  "allowedPaths": ["/meridian/**"],
+
+  "allowedActions": ["navigate", "click", "type", "select", "press", "read", "wait"],
+
+  "risky": {
+    "$comment": "Matched case-insensitively as substrings of the control's ACCESSIBLE NAME, not a selector. The accessible name is what a human operator reads before clicking, so it is the same signal a reviewer would use, and it survives markup changes.",
+    "namePatterns": [
+      "post ",
+      "submit",
+      "confirm",
+      "authorize",
+      "transfer",
+      "wire",
+      "delete",
+      "remove",
+      "close account",
+      "disburse",
+      "approve",
+      "void",
+      "charge off"
+    ],
+    "duringDiscovery": "escalate",
+    "duringReplayUnapproved": "block"
+  },
+
+  "limits": {
+    "maxSteps": 40,
+    "maxDurationMs": 180000,
+    "maxLlmCalls": 30
+  },
+
+  "redaction": {
+    "$comment": "Patterns are applied IN THE ORDER LISTED, because earlier, more specific patterns must claim a match before broader ones do (e.g. a 16-digit card must be labelled 'card', not swallowed by the generic long-digit-run 'accountNumber' rule). NOTE ON MONEY: there is deliberately no 'money' pattern here. We do NOT redact money amounts; balances are the legitimate return value of the capability and redacting them would break the product. Money is protected by CLASSIFICATION instead (Sensitivity 'financial' on the declared output), which keeps it out of logs while still returning it to the caller.",
+    "patterns": {
+      "password": "(?i)(password|passwd|pwd)\\s*[:=]\\s*\\S+",
+      "bearerToken": "\\b(?:Bearer|token|apikey|api_key)\\s*[:=]?\\s*\\S{12,}",
+      "ssn": "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+      "card": "\\b\\d(?:[ -]?\\d){12,18}\\b",
+      "accountNumber": "\\b(?:[A-Z]{3}-\\d{6,}-\\d{2}|\\d{9,})\\b",
+      "email": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
+      "usPhone": "\\b(?:\\+?1[ .-]?)?\\(?\\d{3}\\)?[ .-]?\\d{3}[ .-]?\\d{4}\\b"
+    }
+  }
+}

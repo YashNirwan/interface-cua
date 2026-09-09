@@ -1,0 +1,79 @@
+{
+  "status": "business_outcome",
+  "outcome": {
+    "code": "MEMBER_RESTRICTED",
+    "description": "The operator is not entitled to view this member record.",
+    "data": {}
+  },
+  "meta": {
+    "capabilityId": "meridian.member.savings-balance",
+    "capabilityVersion": "1.2.0",
+    "runId": "rpl_mtu7z1yw_d8e1b6",
+    "tenantId": null,
+    "startedAt": "2026-09-09T14:54:36.058Z",
+    "durationMs": 247,
+    "steps": [
+      {
+        "stepId": "s1",
+        "intent": "Enter operator ID to sign on",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:36.075Z",
+        "durationMs": 34,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s2",
+        "intent": "Enter operator password",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:36.109Z",
+        "durationMs": 21,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s3",
+        "intent": "Submit credentials to sign on",
+        "actionType": "click",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:36.130Z",
+        "durationMs": 76,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false
+      },
+      {
+        "stepId": "s4",
+        "intent": "Enter member ID to search",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:36.206Z",
+        "durationMs": 36,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s5",
+        "intent": "Search for the member after entering ID",
+        "actionType": "click",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:54:36.242Z",
+        "durationMs": 63,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "business outcome 'MEMBER_RESTRICTED'"
+      }
+    ],
+    "recoveries": [],
+    "driftDetected": false,
+    "evidence": {
+      "runId": "rpl_mtu7z1yw_d8e1b6",
+      "dir": "evidence/rpl_mtu7z1yw_d8e1b6",
+      "logFile": "evidence/rpl_mtu7z1yw_d8e1b6/events.jsonl"
+    }
+  }
+}

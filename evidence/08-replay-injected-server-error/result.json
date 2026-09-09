@@ -1,0 +1,84 @@
+{
+  "status": "failed",
+  "failure": {
+    "class": "surface_error",
+    "message": "step 's5' did not reach its expected state after 3 attempt(s) [built-in condition 'surface-error' matched (the application itself failed; app incident, retryable once healthy)]",
+    "retryable": true,
+    "stepId": "s5",
+    "expected": "text \"Member Profile MERIDIAN CORE v4\"",
+    "observed": "[Meridian Core] /meridian :: <body bgcolor=\"#EFEFE7\"> <table border=\"0\" cellpadding=\"10\"><tr><td>This application requires a browser with frame support.</td></tr></table> </body> MAIN MENU Member Search Account Services Sign Off Operator: [SECRET] Server Error in '/MeridianCore' Application. Unhandled except…"
+  },
+  "meta": {
+    "capabilityId": "meridian.member.savings-balance",
+    "capabilityVersion": "1.2.0",
+    "runId": "rpl_mtu83r74_4ff6a6",
+    "tenantId": null,
+    "startedAt": "2026-09-09T14:58:15.609Z",
+    "durationMs": 1138,
+    "steps": [
+      {
+        "stepId": "s1",
+        "intent": "Enter operator ID to sign on",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:58:15.656Z",
+        "durationMs": 62,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s2",
+        "intent": "Enter operator password",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:58:15.718Z",
+        "durationMs": 26,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s3",
+        "intent": "Submit credentials to sign on",
+        "actionType": "click",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:58:15.744Z",
+        "durationMs": 78,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false
+      },
+      {
+        "stepId": "s4",
+        "intent": "Enter member ID to search",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T14:58:15.822Z",
+        "durationMs": 36,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s5",
+        "intent": "Search for the member after entering ID",
+        "actionType": "click",
+        "status": "failed",
+        "startedAt": "2026-09-09T14:58:15.858Z",
+        "durationMs": 889,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "checkpoint_failed"
+      }
+    ],
+    "recoveries": [],
+    "driftDetected": false,
+    "evidence": {
+      "runId": "rpl_mtu83r74_4ff6a6",
+      "dir": "evidence/rpl_mtu83r74_4ff6a6",
+      "logFile": "evidence/rpl_mtu83r74_4ff6a6/events.jsonl",
+      "failureScreenshot": "captures/failure-surface_error-s5.png",
+      "snapshot": "captures/failure-surface_error-s5.txt"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "int_smoke_mtu86vc9_ee305f_1",
+  "runId": "smoke_mtu86vc9_ee305f",
+  "raisedAt": "2026-09-09T15:00:42.043Z",
+  "reason": "risky_action_blocked",
+  "summary": "step 's7' (Post the account view (simulated irreversible action)) is classified risky and this capability is not approved for unattended risky actions",
+  "context": {
+    "mode": "replay",
+    "location": {
+      "uri": "http://127.0.0.1:8099/meridian/member/100482",
+      "title": "Meridian Core - Member Profile"
+    },
+    "capabilityId": "meridian.member.savings-balance.smoke",
+    "capabilityVersion": "1.0.0",
+    "stepId": "s7",
+    "screenshot": "captures/int_smoke_mtu86vc9_ee305f_1.png",
+    "snapshot": "Meridian Core - Member Profile — http://127.0.0.1:8099/meridian/member/100482\n\nCONTROLS (61):\n  cell \"Member Profile\"\n  generic \"Member Profile\"\n  cell \"MERIDIAN CORE v4.2.1\"\n  cell \"Member 100482 — Profile\" section=Member 100482 — Profile\n  generic \"Member 100482 — Profile\" section=Member 100482 — Profile\n  cell \"Name:\" section=Member Information\n  cell \"Dana Whitfield\" section=Member Information\n  cell \"Member ID:\" section=Member Information\n  cell \"100482\" section=Member Information\n  cell \"Status:\" section=Member Information\n  cell \"Active\" section=Member Information\n  cell \"Branch:\" section=Member Information\n  cell \"Riverton Main\" section=Member Information\n  cell \"Member Since:\" section=Member Information\n  cell \"2014-03-11\" section=Member Information\n  cell \"Total Relationship Balance:\" section=Relationship Summary\n  cell \"$6,016.64\" section=Relationship Summary\n  cell \"Accounts On File:\" section=Relationship Summary\n  cell \"2\" section=Relationship Summary\n  cell \"Account Type\" section=Accounts\n  generic \"Account Type\" section=Accounts\n  cell \"Account Number\" section=Accounts\n  generic \"Account Number\" section=Accounts\n  cell \"Status\" section=Accounts\n  generic \"Status\" section=Accounts\n  cell \"Current Balance\" section=Accounts\n  generic \"Current Balance\" section=Accounts\n  cell \"Savings\" section=Accounts\n  cell \"[REDACTED:accountNumber]\" section=Accounts\n  cell \"Active\" section=Accounts\n  cell \"$4,812.55\" section=Accounts\n  button \"View\" section=Accounts\n  cell \"Checking\" section=Accounts\n  cell \"[REDACTED:accountNumber]\" section=Accounts\n  cell \"Active\" section=Accounts\n  cell \"$1,204.09\" section=Accounts\n  button \"View\" section=Accounts\n  button \"Open Sub-Account\"\n  cell \"Posting Date\" section=Recent Activity\n  generic \"Posting Date\" section=Recent Activity\n  cell \"Description\" section=Recent Activity\n  generic \"Description\" section=Recent Activity\n  cell \"Account\" section=Recent Activity\n  generic \"Account\" section=Recent Activity\n  cell \"Amount\" section=Recent Activity\n  generic \"Amount\" section=Recent Activity\n  cell \"2026-09-04\" section=Recent Activity\n  cell \"Share draft clearing\" section=Recent Activity\n  cell \"[REDACTED:accountNumber]\" section=Recent Activity\n  cell \"-$218.70\" section=Recent Activity\n  button \"View\" section=Recent Activity\n  cell \"2026-09-01\" section=Recent Activity\n  cell \"Payroll deposit\" section=Recent Activity\n  cell \"[REDACTED:accountNumber]\" section=Recent Activity\n  cell \"$1,840.00\" section=Recent Activity\n  cell \"2026-08-27\" section=Recent Activity\n  cell \"Branch withdrawal\" section=Recent Activity\n  cell \"[REDACTED:accountNumber]\" section=Recent Activity\n  cell \"-$300.00\" section=Recent Activity\n  cell \"Return to Member Search\" section=Return to Member Search\n  link \"Return to Member Search\" section=Return to Member Search\n\nTEXT:\n  Member Profile MERIDIAN CORE v4.2.1 Member 100482 — Profile Member Information Name: Dana Whitfield Member ID: 100482 Status: Active Branch: Riverton Main Member Since: 2014-03-11 Relationship Summary Total Relationship Balance: $6,016.64 Accounts On File: 2 Accounts Account Type Account Number Status Current Balance Savings [REDACTED:accountNumber] Active $4,812.55 Checking [REDACTED:accountNumber] Active $1,204.09 Recent Activity Posting Date Description Account Amount 2026-09-04 Share draft clearing [REDACTED:accountNumber] -$218.70 2026-09-01 Payroll deposit [REDACTED:accountNumber] $1,840.00 2026-08-27 Branch withdrawal [REDACTED:accountNumber] -$300.00 Return to Member Search"
+  },
+  "allowedResolutions": [
+    "approve",
+    "skip",
+    "abort"
+  ],
+  "status": "resolved",
+  "resolution": {
+    "kind": "approve",
+    "resolvedAt": "2026-09-09T15:00:42.045Z",
+    "operator": "auto (CUA_AUTO_RESOLVE_ESCALATIONS)",
+    "humanActions": [],
+    "note": "auto-resolved: non-interactive run"
+  },
+  "humanActions": []
+}

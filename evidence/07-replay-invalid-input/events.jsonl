@@ -1,0 +1,1 @@
+{"seq":1,"at":"2026-09-09T14:54:36.926Z","runId":"rpl_mtu7z2n3_3f5ca3","type":"error","controller":"automation","data":{"class":"invalid_input","errors":["input 'memberId' does not match required pattern /\\d{6}/"]},"message":"invalid input for meridian.member.savings-balance"}

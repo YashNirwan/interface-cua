@@ -1,0 +1,99 @@
+{
+  "status": "success",
+  "outputs": {
+    "accountNumber": "[REDACTED:accountNumber]",
+    "status": "Active",
+    "balance": 4812.55
+  },
+  "meta": {
+    "capabilityId": "meridian.member.savings-balance.smoke",
+    "capabilityVersion": "1.0.0",
+    "runId": "smoke_mtu86vc9_ee305f",
+    "tenantId": null,
+    "startedAt": "2026-09-09T15:00:41.507Z",
+    "durationMs": 625,
+    "steps": [
+      {
+        "stepId": "s1",
+        "intent": "Enter the operator id",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T15:00:41.586Z",
+        "durationMs": 93,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s2",
+        "intent": "Enter the operator password",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T15:00:41.679Z",
+        "durationMs": 43,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s3",
+        "intent": "Sign on",
+        "actionType": "click",
+        "status": "ok",
+        "startedAt": "2026-09-09T15:00:41.722Z",
+        "durationMs": 113,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false
+      },
+      {
+        "stepId": "s4",
+        "intent": "Open Member Search",
+        "actionType": "navigate",
+        "status": "ok",
+        "startedAt": "2026-09-09T15:00:41.835Z",
+        "durationMs": 28,
+        "tierDegraded": false
+      },
+      {
+        "stepId": "s5",
+        "intent": "Type the member id",
+        "actionType": "type",
+        "status": "ok",
+        "startedAt": "2026-09-09T15:00:41.863Z",
+        "durationMs": 25,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false,
+        "note": "no checkpoint declared (unverified)"
+      },
+      {
+        "stepId": "s6",
+        "intent": "Run the search",
+        "actionType": "click",
+        "status": "ok",
+        "startedAt": "2026-09-09T15:00:41.888Z",
+        "durationMs": 69,
+        "tier": "exact-name-in-frame",
+        "tierDegraded": false
+      },
+      {
+        "stepId": "s7",
+        "intent": "Post the account view (simulated irreversible action)",
+        "actionType": "click",
+        "status": "ok",
+        "startedAt": "2026-09-09T15:00:41.957Z",
+        "durationMs": 171,
+        "tier": "near-text",
+        "tierDegraded": false
+      }
+    ],
+    "recoveries": [],
+    "driftDetected": false,
+    "evidence": {
+      "runId": "smoke_mtu86vc9_ee305f",
+      "dir": "evidence/smoke_mtu86vc9_ee305f",
+      "logFile": "evidence/smoke_mtu86vc9_ee305f/events.jsonl",
+      "failureScreenshot": "captures/escalation-smoke_mtu86vc9_ee305f-int-1.png",
+      "snapshot": "captures/escalation-smoke_mtu86vc9_ee305f-int-1.txt"
+    }
+  }
+}

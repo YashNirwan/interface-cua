@@ -1,0 +1,24 @@
+{
+  "status": "failed",
+  "failure": {
+    "class": "invalid_input",
+    "message": "input validation failed: input 'memberId' does not match required pattern /\\d{6}/",
+    "retryable": false
+  },
+  "meta": {
+    "capabilityId": "meridian.member.savings-balance",
+    "capabilityVersion": "1.2.0",
+    "runId": "rpl_mtu7z2n3_3f5ca3",
+    "tenantId": null,
+    "startedAt": "2026-09-09T14:54:36.926Z",
+    "durationMs": 1,
+    "steps": [],
+    "recoveries": [],
+    "driftDetected": false,
+    "evidence": {
+      "runId": "rpl_mtu7z2n3_3f5ca3",
+      "dir": "evidence/rpl_mtu7z2n3_3f5ca3",
+      "logFile": "evidence/rpl_mtu7z2n3_3f5ca3/events.jsonl"
+    }
+  }
+}

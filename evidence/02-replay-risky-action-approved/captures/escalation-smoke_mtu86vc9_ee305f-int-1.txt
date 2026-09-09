@@ -1,0 +1,61 @@
+(top) | cell | - | Member Profile
+(top) | generic | - | Member Profile
+(top) | cell | - | MERIDIAN CORE v4.2.1
+(top) | cell | Member 100482 — Profile | Member 100482 — Profile
+(top) | generic | Member 100482 — Profile | Member 100482 — Profile
+(top) | cell | Member Information | Name:
+(top) | cell | Member Information | Dana Whitfield
+(top) | cell | Member Information | Member ID:
+(top) | cell | Member Information | 100482
+(top) | cell | Member Information | Status:
+(top) | cell | Member Information | Active
+(top) | cell | Member Information | Branch:
+(top) | cell | Member Information | Riverton Main
+(top) | cell | Member Information | Member Since:
+(top) | cell | Member Information | 2014-03-11
+(top) | cell | Relationship Summary | Total Relationship Balance:
+(top) | cell | Relationship Summary | $6,016.64
+(top) | cell | Relationship Summary | Accounts On File:
+(top) | cell | Relationship Summary | 2
+(top) | cell | Accounts | Account Type
+(top) | generic | Accounts | Account Type
+(top) | cell | Accounts | Account Number
+(top) | generic | Accounts | Account Number
+(top) | cell | Accounts | Status
+(top) | generic | Accounts | Status
+(top) | cell | Accounts | Current Balance
+(top) | generic | Accounts | Current Balance
+(top) | cell | Accounts | Savings
+(top) | cell | Accounts | [REDACTED:accountNumber]
+(top) | cell | Accounts | Active
+(top) | cell | Accounts | $4,812.55
+(top) | button | Accounts | View
+(top) | cell | Accounts | Checking
+(top) | cell | Accounts | [REDACTED:accountNumber]
+(top) | cell | Accounts | Active
+(top) | cell | Accounts | $1,204.09
+(top) | button | Accounts | View
+(top) | button | - | Open Sub-Account
+(top) | cell | Recent Activity | Posting Date
+(top) | generic | Recent Activity | Posting Date
+(top) | cell | Recent Activity | Description
+(top) | generic | Recent Activity | Description
+(top) | cell | Recent Activity | Account
+(top) | generic | Recent Activity | Account
+(top) | cell | Recent Activity | Amount
+(top) | generic | Recent Activity | Amount
+(top) | cell | Recent Activity | 2026-09-04
+(top) | cell | Recent Activity | Share draft clearing
+(top) | cell | Recent Activity | [REDACTED:accountNumber]
+(top) | cell | Recent Activity | -$218.70
+(top) | button | Recent Activity | View
+(top) | cell | Recent Activity | 2026-09-01
+(top) | cell | Recent Activity | Payroll deposit
+(top) | cell | Recent Activity | [REDACTED:accountNumber]
+(top) | cell | Recent Activity | $1,840.00
+(top) | cell | Recent Activity | 2026-08-27
+(top) | cell | Recent Activity | Branch withdrawal
+(top) | cell | Recent Activity | [REDACTED:accountNumber]
+(top) | cell | Recent Activity | -$300.00
+(top) | cell | Return to Member Search | Return to Member Search
+(top) | link | Return to Member Search | Return to Member Search
