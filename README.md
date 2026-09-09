@@ -12,6 +12,26 @@ The design write-up is in **[REPORT.md](REPORT.md)**. Run evidence is in **[evid
 
 ---
 
+## Six decisions worth looking at
+
+Each is one click away, and each is argued in REPORT.md.
+
+**1. "No such member" is an answer, not an error.** Declared business outcomes are checked *before* step checkpoints, so a lookup for a nonexistent member returns `MEMBER_NOT_FOUND` with exit code 0 — not `checkpoint_failed: expected element not found`, which would force the calling agent to string-match an error message to find out whether the member exists. That ordering is the single most consequential decision in the engine. → [`replay/executor.ts`](src/replay/executor.ts) header, [REPORT §3](REPORT.md#3-determinism--error-handling)
+
+**2. The locator tells you it's dying before it dies.** A descriptor stores seven ranked signals (role + accessible name → section → neighbouring text → framework id → ordinal position). Replay records *which tier actually fired* and compares it to the tier recorded. A step that used to resolve on name and now resolves on position still passes — and raises `driftDetected`. Drift detection falls out of the locator design rather than being a separate system. → [`surface/web/resolve.ts`](src/surface/web/resolve.ts)
+
+**3. We never ship a detector we haven't watched fire.** You cannot learn an app's failure screens from one happy-path run. `cua learn-outcome` runs the flow with inputs that *should* fail and derives the detector from what the app actually rendered — after first running the happy path to establish a baseline, so page chrome present on every screen can never become a detector. → [`cli.ts`](src/cli.ts), `pickDistinctivePhrase`
+
+**4. The model never sees a parameter value.** It is told the capability takes a `memberId` and instructed to type the literal `{{memberId}}`; substitution happens in the instant before the keystroke. So the transcript holds no customer data or credentials, the recorded step is *already* parameterized, and a password can be typed into a login form the model discovered without the model ever holding it. → [`agent/discover.ts`](src/agent/discover.ts) header
+
+**5. Control transfer is a fenced lease, not a pause flag.** Every transfer bumps an epoch; an in-flight automation action that completes *after* a human took over is rejected rather than applied. A pause flag cannot give you that, and the failure it prevents is a click landing in the middle of an operator's typing. → [`escalation/lease.ts`](src/escalation/lease.ts)
+
+**6. Assertions get retried. Actions never do.** You cannot tell "the click was lost" from "the click worked and confirmation is slow" by looking at the screen, so the safe reading is the one that does not act twice. Live testing then caught the sharper version: clearing an interstitial often lands you where the interrupted action was already going, because the server accepted it — so replay re-checks the checkpoint before repeating. That bug would have double-posted a transaction. → [REPORT §3](REPORT.md#3-determinism--error-handling)
+
+If you only open two files, make them [`src/artifact/schema.ts`](src/artifact/schema.ts) (the contract) and [`src/replay/executor.ts`](src/replay/executor.ts) (the taxonomy).
+
+---
+
 ## The target
 
 `apps/meridian` is a deliberately hostile stand-in for a bank back-office app: a real `<frameset>`, table-based layout, ASP.NET-style ids (`ctl00$MainContent$txtMemberId`), **no test ids, no ARIA, no `<label for>`** — form fields are labelled only by the adjacent `<td>`. It also injects runtime faults on demand (interstitials, session expiry, HTTP 500, latency), which is what makes the error-path evidence reproducible rather than anecdotal.
