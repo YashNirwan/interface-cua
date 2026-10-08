@@ -149,6 +149,7 @@ try {
       logger: session.logger,
       redactor: session.redactor,
       secrets: envSecrets,
+      setOneTimeApproval: (granted) => { session.budget.approveNextAction = granted; },
       escalation: {
         escalate: async (o) => {
           const r = await session.broker.escalate({

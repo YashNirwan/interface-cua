@@ -69,14 +69,18 @@ export function hasPlaceholder(s: string): boolean {
 
 /** Replace every `{{name}}` in `tpl`. Throws if any placeholder is unbound. */
 export function bindTemplate(tpl: string, bound: Record<string, string>): string {
+  return bindWith(tpl, bound, (value) => value);
+}
+
+function bindWith(tpl: string, bound: Record<string, string>, transform: (value: string) => string): string {
   const missing: string[] = [];
   const out = tpl.replace(PLACEHOLDER_G, (_match, name: string) => {
-    const v = bound[name];
+    const v = Object.prototype.hasOwnProperty.call(bound, name) ? bound[name] : undefined;
     if (v === undefined) {
       missing.push(name);
       return '';
     }
-    return v;
+    return transform(v);
   });
   if (missing.length > 0) throw new UnboundPlaceholderError([...new Set(missing)], tpl);
   return out;
@@ -85,6 +89,11 @@ export function bindTemplate(tpl: string, bound: Record<string, string>): string
 /** Bind only if the string actually contains a placeholder. Cheap and total. */
 function bindIfTemplated(s: string, bound: Record<string, string>): string {
   return hasPlaceholder(s) ? bindTemplate(s, bound) : s;
+}
+
+/** Parameters are data; only the artifact author supplies regex syntax. */
+function bindPattern(pattern: string, bound: Record<string, string>): string {
+  return bindWith(pattern, bound, (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 }
 
 // ---------------------------------------------------------------------------
@@ -101,12 +110,11 @@ export type ValidateResult =
  *
  * An unanchored `\d{6}` would accept `../../etc/passwd?x=123456`. Anchoring is
  * the difference between "the pattern documents the shape" and "the pattern is
- * a validation control". We strip any anchors the author already supplied so we
- * never build a doubly-anchored, subtly different expression.
+ * a validation control". Preserve authored anchors and escaped literal dollar
+ * signs; the outer group also contains any alternation in the pattern.
  */
 function anchoredPattern(pattern: string): RegExp {
-  const body = pattern.replace(/^\^/, '').replace(/\$$/, '');
-  return new RegExp(`^(?:${body})$`);
+  return new RegExp(`^(?:${pattern})(?![\\s\\S])`);
 }
 
 /** Coerce a caller-supplied scalar into the string form the templates need. */
@@ -127,19 +135,20 @@ function checkDeclaredType(name: string, spec: ParamSpec, value: string): string
     case 'money': {
       // Accept the human forms a caller might reasonably send; the browser only
       // ever sees what we hand it, so we normalize nothing here beyond checking.
-      if (!Number.isFinite(Number(value.replace(/[,\s$]/g, '')))) {
-        return `input '${name}' must be a ${spec.type}, got "${value}"`;
+      const numeric = value.replace(/[,\s$]/g, '');
+      if (numeric === '' || !Number.isFinite(Number(numeric))) {
+        return `input '${name}' must be a ${spec.type}`;
       }
       return null;
     }
     case 'boolean':
       if (!TRUEY.has(value.toLowerCase()) && !FALSEY.has(value.toLowerCase())) {
-        return `input '${name}' must be a boolean, got "${value}"`;
+        return `input '${name}' must be a boolean`;
       }
       return null;
     case 'date':
       if (!/^\d{4}-\d{2}-\d{2}$/.test(value) && !/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value)) {
-        return `input '${name}' must be a date (YYYY-MM-DD or MM/DD/YYYY), got "${value}"`;
+        return `input '${name}' must be a date (YYYY-MM-DD or MM/DD/YYYY)`;
       }
       return null;
     case 'string':
@@ -160,7 +169,7 @@ export function validateInputs(
   secrets: (key: string) => string | undefined,
 ): ValidateResult {
   const errors: string[] = [];
-  const bound: Record<string, string> = {};
+  const bound: Record<string, string> = Object.create(null);
   const declared = Object.entries(cap.inputs);
   const declaredNames = new Set(declared.map(([n]) => n));
 
@@ -231,7 +240,7 @@ export function validateInputs(
     }
 
     if (spec.enum !== undefined && spec.enum.length > 0 && !spec.enum.includes(value)) {
-      errors.push(`input '${name}' must be one of [${spec.enum.join(', ')}], got "${value}"`);
+      errors.push(`input '${name}' must be one of [${spec.enum.join(', ')}]`);
       continue;
     }
 
@@ -287,8 +296,8 @@ export function bindDescriptor(d: TargetDescriptorSpec, bound: Record<string, st
 export function bindCondition(c: Condition, bound: Record<string, string>): Condition {
   if ('textPresent' in c) return { textPresent: bindIfTemplated(c.textPresent, bound) };
   if ('textAbsent' in c) return { textAbsent: bindIfTemplated(c.textAbsent, bound) };
-  if ('textMatches' in c) return { textMatches: bindIfTemplated(c.textMatches, bound) };
-  if ('uriMatches' in c) return { uriMatches: bindIfTemplated(c.uriMatches, bound) };
+  if ('textMatches' in c) return { textMatches: bindPattern(c.textMatches, bound) };
+  if ('uriMatches' in c) return { uriMatches: bindPattern(c.uriMatches, bound) };
   if ('elementPresent' in c) return { elementPresent: bindDescriptor(c.elementPresent, bound) };
   if ('elementAbsent' in c) return { elementAbsent: bindDescriptor(c.elementAbsent, bound) };
   if ('all' in c) return { all: c.all.map((s) => bindCondition(s, bound)) };
@@ -299,7 +308,7 @@ export function bindCondition(c: Condition, bound: Record<string, string>): Cond
 /** Bind an extraction source (label text, regex pattern, target descriptor). */
 export function bindExtractionSource(src: ExtractionSource, bound: Record<string, string>): ExtractionSource {
   if ('element' in src) return { element: bindDescriptor(src.element, bound) };
-  if ('textPattern' in src) return { textPattern: bindIfTemplated(src.textPattern, bound) };
+  if ('textPattern' in src) return { textPattern: bindPattern(src.textPattern, bound) };
   const within = src.labeledValue.within;
   const row = src.labeledValue.row;
   return {

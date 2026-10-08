@@ -71,7 +71,7 @@ export class FileCapabilityStore implements CapabilityStore {
     // withdrawn capability. Asking for it by exact version still works, so the
     // audit trail stays intact.
     const live = matches.filter((c) => c.status !== 'deprecated');
-    return live.sort((a, b) => compareVersionsDesc(a.version, b.version))[0] ?? matches[0];
+    return live.sort((a, b) => compareVersionsDesc(a.version, b.version))[0];
   }
 
   save(cap: Capability): string {

@@ -100,6 +100,8 @@ export interface ReplayDeps {
   redactor: Redactor;
   escalation?: EscalationPort;
   secrets?: (key: string) => string | undefined;
+  /** Wire operator approval into the guarded surface for one attempt only. */
+  setOneTimeApproval?: (granted: boolean) => void;
   /** Injectable clock, so durations in tests are deterministic. */
   now?: () => number;
 }
@@ -496,7 +498,17 @@ async function runRecoveries(ctx: ExecCtx, obs: Observation, atStepId: string): 
 
     try {
       for (const [i, sa] of recovery.do.entries()) {
-        await performAction(ctx, toAction(sa, ctx.bound), `recovery:${recovery.name}[${i}] ${sa.type}`);
+        const result = await performAction(ctx, toAction(sa, ctx.bound), `recovery:${recovery.name}[${i}] ${sa.type}`);
+        if (!result.ok) {
+          return {
+            obs, fired: false, retryStep: false, blocked: null,
+            terminal: await terminalFailure(ctx, failureDetail(
+              classifySurfaceError(result.error?.class, result.error?.message ?? ''),
+              `recovery '${recovery.name}' action ${i + 1} failed: ${result.error?.message ?? 'surface reported failure'}`,
+              { stepId: atStepId },
+            ), await ctx.deps.surface.observe().catch(() => null)),
+          };
+        }
       }
     } catch (err) {
       if (err instanceof PolicyViolationError) {
@@ -827,7 +839,7 @@ async function runStep(ctx: ExecCtx, step: Step, prevStepId: string | undefined)
     // (c) recoveries — clear interstitials before asserting anything about the screen
     const rec = await runRecoveries(ctx, obs, step.id);
     if (rec.terminal !== undefined) {
-      commit('failed', 'recovery denied by policy');
+      commit('failed', 'recovery failed');
       return { kind: 'terminal', result: rec.terminal };
     }
     if (rec.blocked !== null) {
@@ -936,8 +948,20 @@ async function runStep(ctx: ExecCtx, step: Step, prevStepId: string | undefined)
         commit('skipped', `operator skipped this step (${decision.id})`);
         return { kind: 'continue' };
       }
-      // 'approve' (or 'resume', treated as approve here): re-run the action ONCE.
-      attempt = await attemptAction(ctx, step, true);
+      if (decision.kind !== 'approve') {
+        commit('failed', `unsupported approval resolution '${decision.kind}'`);
+        return { kind: 'terminal', result: escalatedResult(ctx, {
+          id: decision.id, reason: 'risky_action_blocked', stepId: step.id, resolution: decision.kind,
+        }) };
+      }
+      // Grant only this attempt, including the guard's live policy check.
+      // Revoke even if resolution or the action throws.
+      try {
+        ctx.deps.setOneTimeApproval?.(true);
+        attempt = await attemptAction(ctx, step, true);
+      } finally {
+        ctx.deps.setOneTimeApproval?.(false);
+      }
       if (attempt.kind === 'needs-approval') {
         /*
          * The wrapper refused despite the operator's approval. This is an
@@ -1065,7 +1089,7 @@ async function settleCheckpoint(ctx: ExecCtx, step: Step, trace: StepTrace): Pro
     }
 
     const rec = await runRecoveries(ctx, obs, step.id);
-    if (rec.terminal !== undefined) return { kind: 'terminal', result: rec.terminal, traceStatus: 'failed', note: 'recovery denied by policy' };
+    if (rec.terminal !== undefined) return { kind: 'terminal', result: rec.terminal, traceStatus: 'failed', note: 'recovery failed' };
     if (rec.blocked !== null) {
       return {
         kind: 'terminal',

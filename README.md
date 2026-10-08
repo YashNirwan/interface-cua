@@ -57,6 +57,15 @@ cp .env.example .env      # then add ONE of:
 
 ## Demo path
 
+For a self-contained replay demo, run `npm run demo` after setup. It starts its
+own synthetic Meridian app on a free local port and checks six browser scenarios:
+two members, missing and restricted members, invalid input, and an injected
+server error. No API key or environment setup is needed. Evidence goes under
+`evidence/_scratch/`; the process closes its browser sessions and server on exit.
+The same demo, unit tests, and type checks run in GitHub Actions on Node 22 and 24.
+
+For interactive discovery and replay:
+
 **Terminal 1 — the legacy app:**
 
 ```bash
@@ -138,9 +147,14 @@ npm run cua -- verify <id> --input memberId=100482 --runs 5   # flakiness signal
 npm run cua -- learn-outcome <id> --input memberId=999999 \
     --code MEMBER_NOT_FOUND --description "..."               # see below
 
-npm test          # 165 tests
+npm test          # unit and regression tests
 npm run typecheck
 ```
+
+Parameter values in regex conditions (`textMatches`, `uriMatches`) and extraction
+patterns (`textPattern`) are escaped as literal text. Regex syntax belongs in the
+artifact itself. Unversioned capability lookups exclude deprecated artifacts;
+an explicit `id@version` can still retrieve one for audit or reproduction.
 
 ### `learn-outcome` is worth a look
 

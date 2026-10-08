@@ -241,6 +241,7 @@ program
           logger: session.logger,
           redactor: session.redactor,
           escalation: escalationPort(session, 'replay'),
+          setOneTimeApproval: (granted) => { session.budget.approveNextAction = granted; },
           secrets: envSecrets,
         },
         { runId: session.runId, tenantId: o.tenant ?? null, approvedOverride: o.approve },

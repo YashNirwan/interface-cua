@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseCapability, type Capability } from '../src/artifact/schema.js';
 import type { EvidenceEventType, RunLogger } from '../src/evidence/types.js';
 import { SessionLease } from '../src/escalation/lease.js';
+import { GuardedSurface } from '../src/surface/guarded.js';
 import { PolicyViolationError, type PolicyDecision, type PolicyGate, type Redactor } from '../src/policy/types.js';
 import type { Action, ActResult, Observation, Resolution, Surface, TargetDescriptor, UiNode } from '../src/surface/types.js';
 import { BUILT_IN_CONDITIONS, replay, verifyStability, type ReplayDeps } from '../src/replay/executor.js';
@@ -136,6 +137,69 @@ function cap(over: Record<string, unknown> = {}): Capability {
 }
 
 describe('replay', () => {
+  it('stops at a failed recovery action without running the remaining actions', async () => {
+    const c = cap({ recoveries: [{ name: 'dismiss-notice', description: 'Dismiss notice', detect: { textPresent: 'System Notice' }, do: [
+      { type: 'click', target: { role: 'button', name: 'Continue' } },
+      { type: 'press', key: 'Enter' },
+    ] }] });
+    const s = new FakeSurface([NOTICE]);
+    const act = s.act.bind(s);
+    s.act = async (a) => {
+      const result = await act(a);
+      return a.type === 'click' ? { ok: false, error: { class: 'timeout', message: 'dismissal timed out' } } : result;
+    };
+    const d = deps(s);
+    const r = await replay(c, { memberId: '100482' }, d);
+    expect(r.status).toBe('failed');
+    if (r.status !== 'failed') return;
+    expect(r.failure.class).toBe('timeout');
+    expect(r.failure.message).toContain('dismiss-notice');
+    expect(s.actions).toEqual(['navigate', 'click:Continue']);
+    expect(r.meta.recoveries).toEqual([]);
+  });
+
+  it.each([false, true])('scopes operator approval through the guarded surface, including action failure=%s', async (fail) => {
+    const c = cap({ status: 'draft', policy: { containsRiskyActions: true }, outcomes: [], outputs: [],
+      steps: ['first', 'second'].map((id) => ({ id, intent: 'Post', risk: 'risky', action: { type: 'click', target: { role: 'button', name: 'Post Transaction' } } })),
+      success: { textPresent: 'Member Lookup' },
+    });
+    const post = { ...LOOKUP, nodes: [node({ ref: 'post', role: 'button', name: 'Post Transaction' })] };
+    const raw = new FakeSurface([post]);
+    const act = raw.act.bind(raw);
+    raw.act = async (a) => {
+      const result = await act(a);
+      if (fail && a.type === 'click') throw new Error('action failed');
+      return result;
+    };
+    let approved = false;
+    const grants: boolean[] = [];
+    let approvals = 0;
+    const d = deps(raw);
+    d.surface = new GuardedSurface({ inner: raw, gate, lease: d.lease, logger: d.logger, redactor,
+      context: () => ({ mode: 'replay', approved, stepsTaken: 0, elapsedMs: 0 }),
+    });
+    d.setOneTimeApproval = (value) => { approved = value; grants.push(value); };
+    d.escalation = { escalate: async () => { approvals++; return { kind: 'approve', operator: 'test' }; } };
+    const r = await replay(c, { memberId: '100482' }, d);
+    expect(r.status).toBe(fail ? 'failed' : 'success');
+    expect(approvals).toBe(fail ? 1 : 2);
+    expect(grants).toEqual(fail ? [true, false] : [true, false, true, false]);
+    expect(approved).toBe(false);
+    expect(raw.actions.filter((a) => a === 'click:Post Transaction')).toHaveLength(fail ? 1 : 2);
+  });
+
+  it('does not interpret an unsupported operator resolution as approval', async () => {
+    const c = cap({ status: 'draft', policy: { containsRiskyActions: true }, outcomes: [], outputs: [],
+      steps: [{ id: 'post', intent: 'Post', risk: 'risky', action: { type: 'click', target: { role: 'button', name: 'Search' } } }],
+      success: { textPresent: 'Member Lookup' },
+    });
+    const s = new FakeSurface([LOOKUP]);
+    const r = await replay(c, { memberId: '100482' }, deps(s, {
+      escalation: { escalate: async () => ({ kind: 'resume', operator: 'test' }) },
+    }));
+    expect(r.status).toBe('escalated');
+    expect(s.actions).toEqual(['navigate']);
+  });
   it('happy path returns typed outputs', async () => {
     const s = new FakeSurface([LOOKUP, LOOKUP, LOOKUP, PROFILE]);
     const r = await replay(cap(), { memberId: '100482' }, deps(s));

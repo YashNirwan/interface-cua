@@ -5,6 +5,7 @@ import {
   UnboundPlaceholderError,
   bindCondition,
   bindDescriptor,
+  bindExtractionSource,
   bindTemplate,
   describeBoundParams,
   validateInputs,
@@ -59,6 +60,27 @@ const redactor: Redactor = {
 // ---------------------------------------------------------------------------
 
 describe('validateInputs', () => {
+  it('rejects a trailing newline after an otherwise valid identifier', () => {
+    expect(validateInputs(CAP, { memberId: '100482\n' }, SECRETS).ok).toBe(false);
+  });
+
+  it('preserves escaped dollar signs in declared patterns', () => {
+    const c = { ...CAP, inputs: { price: { ...CAP.inputs.memberId!, pattern: '\\d+\\$' } } };
+    expect(validateInputs(c, { price: '12$' }, NO_SECRETS).ok).toBe(true);
+    expect(validateInputs(c, { price: '12' }, NO_SECRETS).ok).toBe(false);
+  });
+
+  it('does not repeat sensitive caller values in validation errors', () => {
+    const c = { ...CAP, inputs: { amount: { ...CAP.inputs.memberId!, type: 'money' as const, sensitivity: 'financial' as const } } };
+    const r = validateInputs(c, { amount: 'private-account-value' }, NO_SECRETS);
+    expect(r.ok).toBe(false);
+    expect(JSON.stringify(r)).not.toContain('private-account-value');
+  });
+
+  it.each([' ', '$', ',', '$ , '])('rejects a numeric input with no digits: %j', (amount) => {
+    const c = { ...CAP, inputs: { amount: { ...CAP.inputs.memberId!, type: 'money' as const, pattern: undefined } } };
+    expect(validateInputs(c, { amount }, NO_SECRETS).ok).toBe(false);
+  });
   it('accepts a valid invocation and applies declared defaults', () => {
     const r = validateInputs(CAP, { memberId: '100482' }, SECRETS);
     expect(r.ok).toBe(true);
@@ -140,6 +162,9 @@ describe('validateInputs', () => {
 });
 
 describe('bindTemplate', () => {
+  it.each(['constructor', 'toString', '__proto__'])('rejects inherited bindings: %s', (name) => {
+    expect(() => bindTemplate(`{{${name}}}`, {})).toThrow(UnboundPlaceholderError);
+  });
   it('substitutes every placeholder', () => {
     expect(bindTemplate('/meridian/member/{{memberId}}?c={{channel}}', { memberId: '100482', channel: 'web' })).toBe(
       '/meridian/member/100482?c=web',
@@ -195,6 +220,21 @@ describe('bindDescriptor', () => {
 });
 
 describe('bindCondition', () => {
+  it('treats parameter values as literal text inside regex conditions', () => {
+    const c = bindCondition({ textMatches: '^Member {{name}}$' }, { name: '.*(admin)' });
+    if (!('textMatches' in c)) return expect.unreachable();
+    expect(new RegExp(c.textMatches).test('Member somebodyadmin')).toBe(false);
+    expect(new RegExp(c.textMatches).test('Member .*(admin)')).toBe(true);
+    const uri = bindCondition({ uriMatches: '^/member/{{name}}$' }, { name: 'a.b' });
+    if (!('uriMatches' in uri)) return expect.unreachable();
+    expect(new RegExp(uri.uriMatches).test('/member/axb')).toBe(false);
+  });
+
+  it('escapes extraction parameters without changing authored capture groups', () => {
+    const src = bindExtractionSource({ textPattern: '{{label}}: (\\d+)' }, { label: 'Balance (USD)' });
+    if (!('textPattern' in src)) return expect.unreachable();
+    expect(new RegExp(src.textPattern).exec('Balance (USD): 42')?.[1]).toBe('42');
+  });
   it('binds recursively through combinators and descriptors', () => {
     const bound = bindCondition(
       {

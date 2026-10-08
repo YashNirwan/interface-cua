@@ -10,7 +10,7 @@
     "cua": "node --env-file-if-exists=.env --import tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "demo": "tsx scripts/demo.ts"
+    "demo": "node --import tsx scripts/demo.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
